@@ -1,33 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchContacts, addContact, deleteContact } from '../service/api';
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchAllContacts, addNewContact, removeContact } from './operations';
 
 const initialState = {
     items: [],
     isLoading: false,
     error: null,
 };
-
-export const fetchAllContacts = createAsyncThunk(
-    'contacts/fetchAll',
-    async () => {
-        return fetchContacts();
-    }
-);
-
-export const addNewContact = createAsyncThunk(
-    'contacts/addContact',
-    async (contact) => {
-        return addContact(contact);
-    }
-);
-
-export const removeContact = createAsyncThunk(
-    'contacts/deleteContact',
-    async (contactId) => {
-        return deleteContact(contactId);
-    }
-);
-
 const contactsSlice = createSlice({
     name: 'contacts',
     initialState,
@@ -64,7 +42,7 @@ const contactsSlice = createSlice({
             })
             .addCase(removeContact.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.items = state.items.filter((contact) => contact.id !== action.payload);
+                state.items = state.items.filter((contact) => contact.id !== action.payload.id);
             })
             .addCase(removeContact.rejected, (state, action) => {
                 state.isLoading = false;

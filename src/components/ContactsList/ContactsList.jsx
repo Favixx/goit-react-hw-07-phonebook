@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeContact } from '../../redux/contactsSlice';
+import { fetchAllContacts, removeContact } from '../../redux/operations.js';
 import { filterSearchSelector } from 'redux/selectors';
 
 const ContactsList = () => {
     const visibleContacts = useSelector(filterSearchSelector)
     const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchAllContacts());
+    }, [dispatch]);
     return (
         <div>
             <ul className="divide-y divide-gray-200 flex justify-center gap-3">
