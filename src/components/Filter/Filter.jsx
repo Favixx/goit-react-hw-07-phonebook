@@ -3,7 +3,7 @@ import { getFilter } from '../../redux/filterSlice';
 import { filterSelector } from '../../redux/selectors';
 
 export const Filter = () => {
-  const { name } = useSelector(filterSelector);
+  const { filter } = useSelector(filterSelector);
   const dispatch = useDispatch();
 
   const handleFilter = e => {
@@ -20,7 +20,7 @@ export const Filter = () => {
         type="text"
         name="filter"
         onChange={handleFilter}
-        value={name}
+        value={filter}
       />
     </div>
   );

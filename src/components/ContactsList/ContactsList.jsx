@@ -1,31 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeContact } from '../../redux/contactsSlice';
-import { contactsSelector, filterSelector } from 'redux/selectors';
-
-const getVisibleContact = (contacts, searchTerm) => {
-    const term = typeof searchTerm === 'string' ? searchTerm.trim() : '';
-
-    if (term === '') {
-        return contacts;
-    }
-
-    const searchTermLower = term.toLowerCase();
-
-    return contacts.filter((contact) => {
-        const name = contact.name.toLowerCase();
-        const phone = contact.phone.toLowerCase();
-
-        return name.includes(searchTermLower) || phone.includes(searchTermLower);
-    });
-};
+import { filterSearchSelector } from 'redux/selectors';
 
 const ContactsList = () => {
-    const contacts = useSelector(contactsSelector);
-    const filter = useSelector(filterSelector);
+    const visibleContacts = useSelector(filterSearchSelector)
     const dispatch = useDispatch();
-
-    const visibleContacts = getVisibleContact(contacts, filter);
     return (
         <div>
             <ul className="divide-y divide-gray-200 flex justify-center gap-3">
