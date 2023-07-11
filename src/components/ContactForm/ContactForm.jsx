@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
-import { addContact } from '../../redux/contactsSlice';
+import { addNewContact } from '../../redux/contactsSlice';
+import { contactsSelector } from 'redux/selectors';
 
 export const ContactForm = () => {
-    const [contact, setContact] = useState({ name: '', number: '' });
-    const contacts = useSelector(state => state.contacts.contacts);
+    const [contact, setContact] = useState({ name: '', phone: '' });
+    const contacts = useSelector(contactsSelector);
     const dispatch = useDispatch();
 
     const handleChange = e => {
@@ -19,12 +20,16 @@ export const ContactForm = () => {
         return contacts.find(contact => contact.name === name);
     };
 
+    const checkPhone = phone => {
+        return contacts.find(contact => contact.phone === phone);
+    }
+
     const handleSubmit = e => {
         e.preventDefault();
-        if (checkName(contact.name)) {
+        if (checkName(contact.name) || checkPhone(contact.phone)) {
             setContact({
                 name: '',
-                number: '',
+                phone: '',
             });
             alert('Такий контакт вже існує...');
 
@@ -33,10 +38,10 @@ export const ContactForm = () => {
 
         const newContact = contact;
         contact.id = nanoid();
-        dispatch(addContact(newContact));
+        dispatch(addNewContact(newContact));
         setContact({
             name: '',
-            number: '',
+            phone: '',
         });
     };
 
@@ -66,13 +71,13 @@ export const ContactForm = () => {
                 <input
                     type="tel"
                     id="number"
-                    name="number"
+                    name="phone"
                     className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
                     pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                     title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                     placeholder="Phone"
                     required
-                    value={contact.number}
+                    value={contact.phone}
                     onChange={handleChange}
                 />
             </div>

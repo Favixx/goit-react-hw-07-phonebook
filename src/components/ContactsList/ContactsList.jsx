@@ -1,28 +1,41 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from '../../redux/contactsSlice';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { removeContact } from '../../redux/contactsSlice';
+import { contactsSelector, filterSelector } from 'redux/selectors';
+
+const getVisibleContact = (contacts, searchTerm) => {
+    const term = typeof searchTerm === 'string' ? searchTerm.trim() : '';
+
+    if (term === '') {
+        return contacts;
+    }
+
+    const searchTermLower = term.toLowerCase();
+
+    return contacts.filter((contact) => {
+        const name = contact.name.toLowerCase();
+        const phone = contact.phone.toLowerCase();
+
+        return name.includes(searchTermLower) || phone.includes(searchTermLower);
+    });
+};
 
 const ContactsList = () => {
-    const contacts = useSelector(state => state.contacts.contacts);
-    const filter = useSelector(state => state.filter.filter);
+    const contacts = useSelector(contactsSelector);
+    const filter = useSelector(filterSelector);
     const dispatch = useDispatch();
 
-    const getVisibleContact = () => {
-        return contacts.filter(contact =>
-            contact.name.toLowerCase().includes(filter.toLowerCase())
-        );
-    };
-
-    const visibleContacts = getVisibleContact();
+    const visibleContacts = getVisibleContact(contacts, filter);
     return (
         <div>
             <ul className="divide-y divide-gray-200 flex justify-center gap-3">
-                {visibleContacts.map(contact => (
+                {visibleContacts.map((contact) => (
                     <li key={contact.id} className="py-4">
                         <span className="text-lg font-semibold">{contact.name}</span>
-                        <span className="text-gray-500"> : {contact.number}</span>
+                        <span className="text-gray-500"> : {contact.phone}</span>
                         <button
                             className="ml-2 px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
-                            onClick={() => dispatch(deleteContact(contact.id))}
+                            onClick={() => dispatch(removeContact(contact.id))}
                         >
                             Delete
                         </button>
